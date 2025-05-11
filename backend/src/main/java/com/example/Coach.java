@@ -7,16 +7,14 @@ public class Coach {
     private String lastName;
     private String role;
     private int teamId;
-    private String teamName;
 
 
-    public Coach(int coachId, String firstName, String lastName, String role, int teamId, String teamName) {
+    public Coach(int coachId, String firstName, String lastName, String role, int teamId) {
         this.coachId = coachId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
         this.teamId = teamId;
-        this.teamName = teamName;
     }
 
     public int getCoachId() {
@@ -57,14 +55,6 @@ public class Coach {
 
     public void setTeamId(int teamId) {
         this.teamId = teamId;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
     }
 }
 

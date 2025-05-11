@@ -1,34 +1,32 @@
 package com.example;
 
 public class PlayerAward {
-    private int playerId;
-    private int awardId;
+    private int player_id;
+    private int award_id;
     private int year;
-    private String name;
-    private String award;
 
-    public PlayerAward(String award, int awardId, String name, int playerId, int year) {
-        this.award = award;
-        this.awardId = awardId;
-        this.name = name;
-        this.playerId = playerId;
+    public PlayerAward() {}
+
+    public PlayerAward(int player_id, int award_id, int year) {
+        this.player_id = player_id;
+        this.award_id = award_id;
         this.year = year;
     }
 
-    public int getPlayerId() {
-        return playerId;
+    public int getPlayer_id() {
+        return player_id;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
+    public void setPlayer_id(int player_id) {
+        this.player_id = player_id;
     }
 
-    public int getAwardId() {
-        return awardId;
+    public int getAward_id() {
+        return award_id;
     }
 
-    public void setAwardId(int awardId) {
-        this.awardId = awardId;
+    public void setAward_id(int award_id) {
+        this.award_id = award_id;
     }
 
     public int getYear() {
@@ -37,21 +35,5 @@ public class PlayerAward {
 
     public void setYear(int year) {
         this.year = year;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAward() {
-        return award;
-    }
-
-    public void setAward(String award) {
-        this.award = award;
     }
 }

@@ -85,8 +85,7 @@ public class DatabaseService {
             String lname = rs.getString("last_name");
             String role = rs.getString("role");
             int teamId = rs.getInt("team_id");
-            String teamName = getTeamNameById(teamId);
-            coaches.add(new Coach(coachId, fname, lname, role, teamId, teamName));
+            coaches.add(new Coach(coachId, fname, lname, role, teamId));
         }
     
         return coaches;
@@ -160,12 +159,13 @@ public class DatabaseService {
 
 
     public List<PlayerStats> getAllPlayerStats() throws SQLException {
-        List<PlayerStats> playerStats = new ArrayList<>();
-        String sql = "SELECT * FROM PlayerStats;";
-        Connection conn = DriverManager.getConnection(url, user, password);
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
+    List<PlayerStats> playerStats = new ArrayList<>();
+    String sql = "SELECT * FROM PlayerStats;";
     
+    try (Connection conn = DriverManager.getConnection(url, user, password);
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
         while (rs.next()) {
             int statId = rs.getInt("stat_id");
             int gameId = rs.getInt("game_id");
@@ -174,14 +174,12 @@ public class DatabaseService {
             int rushingYards = rs.getInt("rushing_yards");
             int receivingYards = rs.getInt("receiving_yards");
             int touchdowns = rs.getInt("touchdowns");
-           
-            String name = getPlayerNameById(playerId);
 
-            playerStats.add(new PlayerStats(name, gameId, passingYards, playerId, receivingYards, rushingYards, statId, touchdowns));
+            playerStats.add(new PlayerStats(statId,gameId,playerId,passingYards,rushingYards,receivingYards,touchdowns));
         }
-    
-        return playerStats;
     }
+    return playerStats;
+}
 
     public String getAwardById(int awardId) throws SQLException {
         String sql = "SELECT award_name FROM Award WHERE award_id = ?";
@@ -199,26 +197,24 @@ public class DatabaseService {
         }
     }
 
-    public List<PlayerAward> getAllPlayerAwards() throws SQLException {
-        List<PlayerAward> playerAwards = new ArrayList<>();
-        String sql = "SELECT * FROM PlayerAward;";
-        Connection conn = DriverManager.getConnection(url, user, password);
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
+   public List<PlayerAward> getAllPlayerAwards() throws SQLException {
+    List<PlayerAward> playerAwards = new ArrayList<>();
+    String sql = "SELECT * FROM PlayerAward;";
     
+    try (Connection conn = DriverManager.getConnection(url, user, password);
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
         while (rs.next()) {
             int playerId = rs.getInt("player_id");
             int awardId = rs.getInt("award_id");
             int year = rs.getInt("year");
-            
-            String name = getPlayerNameById(playerId);
-            String award = getAwardById(awardId);
 
-
-            playerAwards.add(new PlayerAward(award, awardId, name, playerId, year));
+            playerAwards.add(new PlayerAward(playerId, awardId, year));
         }
-    
-        return playerAwards;
     }
-    
+
+    return playerAwards;
+}
+ 
 }
