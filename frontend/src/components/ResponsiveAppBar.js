@@ -12,7 +12,7 @@ import SportsFootballIcon from '@mui/icons-material/SportsFootball';
 import { NavLink } from 'react-router-dom';
 
 
-const pages = ['Data', 'Edit', 'SQL'];
+const pages = ['Data', 'Edit', 'SQL', 'Querys'];
 
 function ResponsiveAppBar() {
 
