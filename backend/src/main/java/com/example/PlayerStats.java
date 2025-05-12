@@ -1,80 +1,64 @@
 package com.example;
 
 public class PlayerStats {
-    private int stat_id;
-    private int game_id;
-    private int player_id;
-    private int passing_yards;
-    private int rushing_yards;
-    private int receiving_yards;
+    private int statId;
+    private int gameId;
+    private int playerId;
+    private int passingYards;
+    private int rushingYards;
+    private int receivingYards;
     private int touchdowns;
+    private int tackles;
+    private int sacks;
+    private int interceptions;
+    private String name;
 
-    public PlayerStats() {}
-
-    public PlayerStats(int stat_id, int game_id, int player_id, int passing_yards,
-                       int rushing_yards, int receiving_yards, int touchdowns) {
-        this.stat_id = stat_id;
-        this.game_id = game_id;
-        this.player_id = player_id;
-        this.passing_yards = passing_yards;
-        this.rushing_yards = rushing_yards;
-        this.receiving_yards = receiving_yards;
+    public PlayerStats(String name, int gameId, int passingYards, int playerId,
+                       int receivingYards, int rushingYards, int statId, int touchdowns,
+                       int tackles, int sacks, int interceptions) {
+        this.name = name;
+        this.gameId = gameId;
+        this.passingYards = passingYards;
+        this.playerId = playerId;
+        this.receivingYards = receivingYards;
+        this.rushingYards = rushingYards;
+        this.statId = statId;
         this.touchdowns = touchdowns;
+        this.tackles = tackles;
+        this.sacks = sacks;
+        this.interceptions = interceptions;
     }
 
-    public int getStat_id() {
-        return stat_id;
-    }
+    public int getStatId() { return statId; }
+    public void setStatId(int statId) { this.statId = statId; }
 
-    public void setStat_id(int stat_id) {
-        this.stat_id = stat_id;
-    }
+    public int getGameId() { return gameId; }
+    public void setGameId(int gameId) { this.gameId = gameId; }
 
-    public int getGame_id() {
-        return game_id;
-    }
+    public int getPlayerId() { return playerId; }
+    public void setPlayerId(int playerId) { this.playerId = playerId; }
 
-    public void setGame_id(int game_id) {
-        this.game_id = game_id;
-    }
+    public int getPassingYards() { return passingYards; }
+    public void setPassingYards(int passingYards) { this.passingYards = passingYards; }
 
-    public int getPlayer_id() {
-        return player_id;
-    }
+    public int getRushingYards() { return rushingYards; }
+    public void setRushingYards(int rushingYards) { this.rushingYards = rushingYards; }
 
-    public void setPlayer_id(int player_id) {
-        this.player_id = player_id;
-    }
+    public int getReceivingYards() { return receivingYards; }
+    public void setReceivingYards(int receivingYards) { this.receivingYards = receivingYards; }
 
-    public int getPassing_yards() {
-        return passing_yards;
-    }
+    public int getTouchdowns() { return touchdowns; }
+    public void setTouchdowns(int touchdowns) { this.touchdowns = touchdowns; }
 
-    public void setPassing_yards(int passing_yards) {
-        this.passing_yards = passing_yards;
-    }
+    public int getTackles() { return tackles; }
+    public void setTackles(int tackles) { this.tackles = tackles; }
 
-    public int getRushing_yards() {
-        return rushing_yards;
-    }
+    public int getSacks() { return sacks; }
+    public void setSacks(int sacks) { this.sacks = sacks; }
 
-    public void setRushing_yards(int rushing_yards) {
-        this.rushing_yards = rushing_yards;
-    }
+    public int getInterceptions() { return interceptions; }
+    public void setInterceptions(int interceptions) { this.interceptions = interceptions; }
 
-    public int getReceiving_yards() {
-        return receiving_yards;
-    }
-
-    public void setReceiving_yards(int receiving_yards) {
-        this.receiving_yards = receiving_yards;
-    }
-
-    public int getTouchdowns() {
-        return touchdowns;
-    }
-
-    public void setTouchdowns(int touchdowns) {
-        this.touchdowns = touchdowns;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }

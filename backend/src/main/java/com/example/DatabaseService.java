@@ -92,54 +92,74 @@ public class DatabaseService {
     }
 
     public List<Games> getAllGames() throws SQLException {
-        List<Games> games = new ArrayList<>();
-        String sql = "SELECT * FROM Games;";
-        Connection conn = DriverManager.getConnection(url, user, password);
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
-    
+    List<Games> games = new ArrayList<>();
+    String sql = """
+        SELECT g.game_id, g.game_date, g.home_team_id, g.away_team_id,
+               g.home_score, g.away_score, g.stadium,
+               ht.team_name AS home_team_name,
+               at.team_name AS away_team_name
+        FROM Games g
+        JOIN Teams ht ON g.home_team_id = ht.team_id
+        JOIN Teams at ON g.away_team_id = at.team_id
+        ORDER BY g.game_id;
+    """;
+
+    try (Connection conn = DriverManager.getConnection(url, user, password);
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
         while (rs.next()) {
-            int gamesId = rs.getInt("game_id");
+            int gameId = rs.getInt("game_id");
             Date gameDate = rs.getDate("game_date");
             int homeTeamId = rs.getInt("home_team_id");
             int awayTeamId = rs.getInt("away_team_id");
             int homeScore = rs.getInt("home_score");
             int awayScore = rs.getInt("away_score");
             String stadium = rs.getString("stadium");
+            String homeTeamName = rs.getString("home_team_name");
+            String awayTeamName = rs.getString("away_team_name");
 
-            String homeTeamName = getTeamNameById(homeTeamId);
-            String awayTeamName = getTeamNameById(awayTeamId);
-
-
-            games.add(new Games(gamesId, gameDate, homeTeamId, awayTeamId, homeScore, awayScore, stadium, homeTeamName, awayTeamName));
+            games.add(new Games(gameId, gameDate, homeTeamId, awayTeamId,
+                                homeScore, awayScore, stadium,
+                                homeTeamName, awayTeamName));
         }
-    
-        return games;
     }
+
+    return games;
+}
+
 
     public List<Player> getAllPlayers() throws SQLException {
-        List<Player> players = new ArrayList<>();
-        String sql = "SELECT * FROM Players;";
-        Connection conn = DriverManager.getConnection(url, user, password);
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
-    
-        while (rs.next()) {
-            int playerId = rs.getInt("player_id");
-            String firstName = rs.getString("first_name");
-            String lastName = rs.getString("last_name");
-            String nickName = rs.getString("nickname");
-            String position = rs.getString("position");
-            Date birthDate = rs.getDate("birthdate");
-            int teamId = rs.getInt("team_id");
-        
-            String teamName = getTeamNameById(teamId);
+    List<Player> players = new ArrayList<>();
+    String sql = """
+        SELECT p.player_id, p.first_name, p.last_name, p.nickname,
+               p.position, p.birthdate, p.team_id, t.team_name
+        FROM Players p
+        JOIN Teams t ON p.team_id = t.team_id
+        ORDER BY p.player_id
+    """;
 
-            players.add(new Player(playerId, firstName, lastName, nickName, position, birthDate, teamId, teamName));
+    try (Connection conn = DriverManager.getConnection(url, user, password);
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            players.add(new Player(
+                rs.getInt("player_id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("nickname"),
+                rs.getString("position"),
+                rs.getDate("birthdate"),
+                rs.getInt("team_id"),
+                rs.getString("team_name")
+            ));
         }
-    
-        return players;
     }
+
+    return players;
+}
+
 
     public String getPlayerNameById(int playerId) throws SQLException {
         String sql = "SELECT last_name, first_name FROM Players WHERE player_id = ?";
@@ -158,10 +178,19 @@ public class DatabaseService {
     }
 
 
-    public List<PlayerStats> getAllPlayerStats() throws SQLException {
+
+public List<PlayerStats> getAllPlayerStats() throws SQLException {
     List<PlayerStats> playerStats = new ArrayList<>();
-    String sql = "SELECT * FROM PlayerStats;";
-    
+
+    String sql = """
+        SELECT ps.stat_id, ps.game_id, ps.player_id, ps.passing_yards, ps.rushing_yards,
+               ps.receiving_yards, ps.touchdowns, ps.tackles, ps.sacks, ps.interceptions,
+               p.first_name, p.last_name
+        FROM PlayerStats ps
+        JOIN Players p ON ps.player_id = p.player_id
+        ORDER BY ps.stat_id;
+    """;
+
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql);
          ResultSet rs = stmt.executeQuery()) {
@@ -174,12 +203,23 @@ public class DatabaseService {
             int rushingYards = rs.getInt("rushing_yards");
             int receivingYards = rs.getInt("receiving_yards");
             int touchdowns = rs.getInt("touchdowns");
+            int tackles = rs.getInt("tackles");
+            int sacks = rs.getInt("sacks");
+            int interceptions = rs.getInt("interceptions");
 
-            playerStats.add(new PlayerStats(statId,gameId,playerId,passingYards,rushingYards,receivingYards,touchdowns));
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String name = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+
+            playerStats.add(new PlayerStats(name.trim(), gameId, passingYards, playerId,
+                receivingYards, rushingYards, statId, touchdowns, tackles, sacks, interceptions));
         }
     }
+
     return playerStats;
 }
+
+
 
     public String getAwardById(int awardId) throws SQLException {
         String sql = "SELECT award_name FROM Award WHERE award_id = ?";
@@ -199,8 +239,17 @@ public class DatabaseService {
 
    public List<PlayerAward> getAllPlayerAwards() throws SQLException {
     List<PlayerAward> playerAwards = new ArrayList<>();
-    String sql = "SELECT * FROM PlayerAward;";
-    
+
+    String sql = """
+        SELECT pa.player_id, pa.award_id, pa.year,
+               p.first_name, p.last_name,
+               a.award_name
+        FROM PlayerAward pa
+        JOIN Players p ON pa.player_id = p.player_id
+        JOIN Award a ON pa.award_id = a.award_id
+        ORDER BY pa.player_id, pa.award_id;
+    """;
+
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql);
          ResultSet rs = stmt.executeQuery()) {
@@ -209,12 +258,18 @@ public class DatabaseService {
             int playerId = rs.getInt("player_id");
             int awardId = rs.getInt("award_id");
             int year = rs.getInt("year");
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String name = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+            String award = rs.getString("award_name");
 
-            playerAwards.add(new PlayerAward(playerId, awardId, year));
+            PlayerAward pa = new PlayerAward(award, awardId, name.trim(), playerId, year);
+            playerAwards.add(pa);
         }
     }
 
     return playerAwards;
 }
+
  
 }

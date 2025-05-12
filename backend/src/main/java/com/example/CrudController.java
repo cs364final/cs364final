@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
-import java.util.ArrayList;
+
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -26,7 +26,7 @@ public class CrudController {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, player.getFirstName());
             stmt.setString(2, player.getLastName());
-            stmt.setString(3, player.getNickName());
+            stmt.setString(3, player.getNickname());
             stmt.setString(4, player.getPosition());
             stmt.setDate(5, player.getBirthDate());
             stmt.setInt(6, player.getTeamId());
@@ -47,7 +47,7 @@ public class CrudController {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, player.getFirstName());
             stmt.setString(2, player.getLastName());
-            stmt.setString(3, player.getNickName());
+            stmt.setString(3, player.getNickname());
             stmt.setString(4, player.getPosition());
             stmt.setDate(5, player.getBirthDate());
             stmt.setInt(6, player.getTeamId());
@@ -208,19 +208,22 @@ public class CrudController {
         }
     }
 
-   // --------------------- PLAYER STATS ---------------------
+// --------------------- PLAYER STATS ---------------------
 
 @PostMapping("/playerStats/create")
 public ResponseEntity<String> createPlayerStats(@RequestBody PlayerStats stats) throws SQLException {
-    String sql = "INSERT INTO PlayerStats (game_id, player_id, passing_yards, rushing_yards, receiving_yards, touchdowns) VALUES (?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO PlayerStats (game_id, player_id, passing_yards, rushing_yards, receiving_yards, touchdowns, tackles, sacks, interceptions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, stats.getGame_id());
-        stmt.setInt(2, stats.getPlayer_id());
-        stmt.setInt(3, stats.getPassing_yards());
-        stmt.setInt(4, stats.getRushing_yards());
-        stmt.setInt(5, stats.getReceiving_yards());
+        stmt.setInt(1, stats.getGameId());
+        stmt.setInt(2, stats.getPlayerId());
+        stmt.setInt(3, stats.getPassingYards());
+        stmt.setInt(4, stats.getRushingYards());
+        stmt.setInt(5, stats.getReceivingYards());
         stmt.setInt(6, stats.getTouchdowns());
+        stmt.setInt(7, stats.getTackles());
+        stmt.setInt(8, stats.getSacks());
+        stmt.setInt(9, stats.getInterceptions());
         stmt.executeUpdate();
         return ResponseEntity.ok("Player stats created");
     }
@@ -228,38 +231,24 @@ public ResponseEntity<String> createPlayerStats(@RequestBody PlayerStats stats) 
 
 @GetMapping("/playerStats/read")
 public List<PlayerStats> readPlayerStats() throws SQLException {
-    List<PlayerStats> statsList = new ArrayList<>();
-    String sql = "SELECT * FROM PlayerStats;";
-    try (Connection conn = DriverManager.getConnection(url, user, password);
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
-        while (rs.next()) {
-            statsList.add(new PlayerStats(
-                rs.getInt("stat_id"),
-                rs.getInt("game_id"),
-                rs.getInt("player_id"),
-                rs.getInt("passing_yards"),
-                rs.getInt("rushing_yards"),
-                rs.getInt("receiving_yards"),
-                rs.getInt("touchdowns")
-            ));
-        }
-    }
-    return statsList;
+    return db.getAllPlayerStats();  // already returns full PlayerStats with new fields
 }
 
 @PutMapping("/playerStats/update")
 public ResponseEntity<String> updatePlayerStats(@RequestBody PlayerStats stats) throws SQLException {
-    String sql = "UPDATE PlayerStats SET game_id = ?, player_id = ?, passing_yards = ?, rushing_yards = ?, receiving_yards = ?, touchdowns = ? WHERE stat_id = ?";
+    String sql = "UPDATE PlayerStats SET game_id = ?, player_id = ?, passing_yards = ?, rushing_yards = ?, receiving_yards = ?, touchdowns = ?, tackles = ?, sacks = ?, interceptions = ? WHERE stat_id = ?";
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, stats.getGame_id());
-        stmt.setInt(2, stats.getPlayer_id());
-        stmt.setInt(3, stats.getPassing_yards());
-        stmt.setInt(4, stats.getRushing_yards());
-        stmt.setInt(5, stats.getReceiving_yards());
+        stmt.setInt(1, stats.getGameId());
+        stmt.setInt(2, stats.getPlayerId());
+        stmt.setInt(3, stats.getPassingYards());
+        stmt.setInt(4, stats.getRushingYards());
+        stmt.setInt(5, stats.getReceivingYards());
         stmt.setInt(6, stats.getTouchdowns());
-        stmt.setInt(7, stats.getStat_id());
+        stmt.setInt(7, stats.getTackles());
+        stmt.setInt(8, stats.getSacks());
+        stmt.setInt(9, stats.getInterceptions());
+        stmt.setInt(10, stats.getStatId());
         stmt.executeUpdate();
         return ResponseEntity.ok("Player stats updated");
     }
@@ -276,15 +265,16 @@ public ResponseEntity<String> deletePlayerStats(@PathVariable int statId) throws
     }
 }
 
-  // --------------------- PLAYER AWARD ---------------------
+
+ // --------------------- PLAYER AWARD ---------------------
 
 @PostMapping("/playerAwards/create")
 public ResponseEntity<String> createPlayerAward(@RequestBody PlayerAward award) throws SQLException {
     String sql = "INSERT INTO PlayerAward (player_id, award_id, year) VALUES (?, ?, ?)";
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, award.getPlayer_id());
-        stmt.setInt(2, award.getAward_id());
+        stmt.setInt(1, award.getPlayerId());
+        stmt.setInt(2, award.getAwardId());
         stmt.setInt(3, award.getYear());
         stmt.executeUpdate();
         return ResponseEntity.ok("Player award created");
@@ -293,7 +283,7 @@ public ResponseEntity<String> createPlayerAward(@RequestBody PlayerAward award) 
 
 @GetMapping("/playerAwards/read")
 public List<PlayerAward> readPlayerAwards() throws SQLException {
-    return db.getAllPlayerAwards();
+    return db.getAllPlayerAwards();  // Now returns PlayerAward with name + award info
 }
 
 @PutMapping("/playerAwards/update")
@@ -302,8 +292,8 @@ public ResponseEntity<String> updatePlayerAward(@RequestBody PlayerAward award) 
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql)) {
         stmt.setInt(1, award.getYear());
-        stmt.setInt(2, award.getPlayer_id());
-        stmt.setInt(3, award.getAward_id());
+        stmt.setInt(2, award.getPlayerId());
+        stmt.setInt(3, award.getAwardId());
         stmt.executeUpdate();
         return ResponseEntity.ok("Player award updated");
     }

@@ -2,23 +2,21 @@ package com.example;
 
 import java.sql.Date;
 
-
 public class Player {
-    
     private int playerId;
     private String firstName;
     private String lastName;
-    private String nickName;
+    private String nickname;
     private String position;
     private Date birthDate;
     private int teamId;
     private String teamName;
 
-    public Player(int playerId, String firstName, String lastName, String nickName, String position, Date birthDate, int teamId, String teamName){
+    public Player(int playerId, String firstName, String lastName, String nickname, String position, Date birthDate, int teamId, String teamName) {
         this.playerId = playerId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.position = position;
         this.birthDate = birthDate;
         this.teamId = teamId;
@@ -49,12 +47,12 @@ public class Player {
         this.lastName = lastName;
     }
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getPosition() {
@@ -88,13 +86,4 @@ public class Player {
     public void setTeamName(String teamName) {
         this.teamName = teamName;
     }
-
-
-
-
-
-
-
-
-
 }
