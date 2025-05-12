@@ -5,13 +5,11 @@ public class Team {
     private int teamId;
     private String teamName;
     private String owner;
-    private String record;
 
-    public Team(int teamId, String teamName, String owner, String record) {
+    public Team(int teamId, String teamName, String owner) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.owner = owner;
-        this.record = record;
     }
 
     public int getTeamId() {
@@ -37,15 +35,6 @@ public class Team {
     public void setOwner(String owner) {
         this.owner = owner;
     }
-
-    public String getRecord() {
-        return record;
-    }
-
-    public void setRecord(String record) {
-        this.record = record;
-    }
-
 
 }
 
