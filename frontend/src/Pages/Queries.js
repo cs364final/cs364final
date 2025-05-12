@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-function Querys(){
+function Queries(){
 
   const [result, setResult] = useState([]);
   const [error, setError] = useState('');
@@ -30,7 +30,7 @@ function Querys(){
   };
   return (
     <div style={{ padding: '20px', maxWidth: '1000px' }}>
-      <h1>Structured Querys</h1>
+      <h1>Structured Queries</h1>
       <button style={{ padding: '10px', margin: '10px'}}
         onClick={() => runQuery("SELECT Teams.team_name AS team, AVG(Games.home_score) AS avg_score FROM Games JOIN Teams ON Teams.team_id = Games.home_team_id GROUP BY Games.home_team_id ORDER BY avg_score DESC LIMIT 5;")}>
           Top 5 teams with the highest average home-game scores
@@ -94,5 +94,5 @@ function Querys(){
   
 }
 
-export default Querys;
+export default Queries;
 

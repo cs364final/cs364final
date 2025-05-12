@@ -12,7 +12,7 @@ import SportsFootballIcon from '@mui/icons-material/SportsFootball';
 import { NavLink } from 'react-router-dom';
 
 
-const pages = ['Data', 'Edit', 'SQL', 'Querys'];
+const pages = ['Data', 'Edit', 'SQL', 'Queries'];
 
 function ResponsiveAppBar() {
 
@@ -20,6 +20,7 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+    
           <SportsFootballIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
           <Typography
             variant="h6"
@@ -35,8 +36,10 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
+           
             Football Statistics
           </Typography>
+        
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <Menu
