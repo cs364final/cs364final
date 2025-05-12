@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Data from './Pages/Data';
 import EditData from './Pages/Edit';
 import SQL from './Pages/SQL';
-import Querys from './Pages/Querys';
+import Queries from './Pages/Queries';
+import { Navigate } from 'react-router-dom';
 
 function App() {
   return (
@@ -13,11 +14,11 @@ function App() {
     <ResponsiveAppBar></ResponsiveAppBar>
     <Container>
     <Routes>
+        <Route index element={<Navigate to="/Data" replace />} />
         <Route path="/Data" element={<Data />} />
         <Route path="/Edit" element={<EditData />} />
         <Route path="/SQL" element={<SQL />} />
-        <Route path="/Querys" element={<Querys />} />
-
+        <Route path="/Queries" element={<Queries/>} />
       </Routes>
     </Container>
     </>
