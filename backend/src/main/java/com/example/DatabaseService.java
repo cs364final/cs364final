@@ -49,8 +49,7 @@ public class DatabaseService {
             int teamId = rs.getInt("team_id");
             String name = rs.getString("team_name");
             String owner = rs.getString("owner");
-            String record = rs.getString("record");
-            teams.add(new Team(teamId, name, owner, record));
+            teams.add(new Team(teamId, name, owner));
         }
     
         return teams;

@@ -1,12 +1,23 @@
 package com.example;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.sql.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/crud")
@@ -21,7 +32,7 @@ public class CrudController {
     // --------------------- PLAYERS ---------------------
     @PostMapping("/players/create")
     public ResponseEntity<String> createPlayer(@RequestBody Player player) throws SQLException {
-        String sql = "INSERT INTO Players (first_name, last_name, nickname, position, birthdate, team_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Players (first_name, last_name, nickname, position, birthdate, team_id, player_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, player.getFirstName());
@@ -30,6 +41,7 @@ public class CrudController {
             stmt.setString(4, player.getPosition());
             stmt.setDate(5, player.getBirthDate());
             stmt.setInt(6, player.getTeamId());
+            stmt.setInt(7, player.getPlayerId());
             stmt.executeUpdate();
             return ResponseEntity.ok("Player created");
         }
@@ -71,12 +83,12 @@ public class CrudController {
     // --------------------- TEAMS ---------------------
     @PostMapping("/teams/create")
     public ResponseEntity<String> createTeam(@RequestBody Team team) throws SQLException {
-        String sql = "INSERT INTO Teams (team_name, owner, record) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Teams (team_name, owner, team_id) VALUES (?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, team.getTeamName());
             stmt.setString(2, team.getOwner());
-            stmt.setString(3, team.getRecord());
+            stmt.setInt(3, team.getTeamId());
             stmt.executeUpdate();
             return ResponseEntity.ok("Team created");
         }
@@ -89,13 +101,12 @@ public class CrudController {
 
     @PutMapping("/teams/update")
     public ResponseEntity<String> updateTeam(@RequestBody Team team) throws SQLException {
-        String sql = "UPDATE Teams SET team_name = ?, owner = ?, record = ? WHERE team_id = ?";
+        String sql = "UPDATE Teams SET team_name = ?, owner = ? WHERE team_id = ?";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, team.getTeamName());
             stmt.setString(2, team.getOwner());
-            stmt.setString(3, team.getRecord());
-            stmt.setInt(4, team.getTeamId());
+            stmt.setInt(3, team.getTeamId());
             stmt.executeUpdate();
             return ResponseEntity.ok("Team updated");
         }
@@ -115,13 +126,14 @@ public class CrudController {
     // --------------------- COACH ---------------------
     @PostMapping("/coach/create")
     public ResponseEntity<String> createCoach(@RequestBody Coach coach) throws SQLException {
-        String sql = "INSERT INTO Coach (first_name, last_name, role, team_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Coach (first_name, last_name, role, team_id, coach_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, coach.getFirstName());
             stmt.setString(2, coach.getLastName());
             stmt.setString(3, coach.getRole());
             stmt.setInt(4, coach.getTeamId());
+            stmt.setInt(5, coach.getCoachId());
             stmt.executeUpdate();
             return ResponseEntity.ok("Coach created");
         }
@@ -161,7 +173,7 @@ public class CrudController {
     // --------------------- GAMES ---------------------
     @PostMapping("/games/create")
     public ResponseEntity<String> createGame(@RequestBody Games game) throws SQLException {
-        String sql = "INSERT INTO Games (game_date, home_team_id, away_team_id, home_score, away_score, stadium) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Games (game_date, home_team_id, away_team_id, home_score, away_score, stadium, game_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, game.getGameDate());
@@ -170,6 +182,7 @@ public class CrudController {
             stmt.setInt(4, game.getHomeScore());
             stmt.setInt(5, game.getAwayScore());
             stmt.setString(6, game.getStadium());
+            stmt.setInt(7, game.getGameId());
             stmt.executeUpdate();
             return ResponseEntity.ok("Game created");
         }
@@ -212,7 +225,7 @@ public class CrudController {
 
 @PostMapping("/playerStats/create")
 public ResponseEntity<String> createPlayerStats(@RequestBody PlayerStats stats) throws SQLException {
-    String sql = "INSERT INTO PlayerStats (game_id, player_id, passing_yards, rushing_yards, receiving_yards, touchdowns, tackles, sacks, interceptions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO PlayerStats (game_id, player_id, passing_yards, rushing_yards, receiving_yards, touchdowns, tackles, sacks, interceptions, stat_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     try (Connection conn = DriverManager.getConnection(url, user, password);
          PreparedStatement stmt = conn.prepareStatement(sql)) {
         stmt.setInt(1, stats.getGameId());
@@ -224,6 +237,7 @@ public ResponseEntity<String> createPlayerStats(@RequestBody PlayerStats stats) 
         stmt.setInt(7, stats.getTackles());
         stmt.setInt(8, stats.getSacks());
         stmt.setInt(9, stats.getInterceptions());
+        stmt.setInt(10, stats.getStatId());
         stmt.executeUpdate();
         return ResponseEntity.ok("Player stats created");
     }

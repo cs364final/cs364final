@@ -79,7 +79,7 @@ function Edit() {
   const renderForm = () => {
     const fields = {
       players: ['playerId', 'firstName', 'lastName', 'nickname', 'position', 'birthDate', 'teamId'],
-      teams: ['teamId', 'teamName', 'owner', 'record'],
+      teams: ['teamId', 'teamName', 'owner'],
       coach: ['coachId', 'firstName', 'lastName', 'role', 'teamId'],
       games: ['gameId', 'gameDate', 'homeTeamId', 'awayTeamId', 'homeScore', 'awayScore', 'stadium'],
       playerStats: ['statId', 'gameId', 'playerId', 'passingYards', 'rushingYards', 'receivingYards', 'touchdowns', 'tackles', 'sacks', 'interceptions'],
@@ -200,7 +200,7 @@ function Edit() {
       {response && (
         <div style={{ marginTop: '20px' }}>
           <h4>Response:</h4>
-          {Array.isArray(response) ? renderResponseTable() : <pre>{response}</pre>}
+          {Array.isArray(response) ? renderResponseTable() : <pre>{JSON.stringify(response)}</pre>}
         </div>
       )}
     </div>
