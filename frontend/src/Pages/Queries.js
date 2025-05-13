@@ -44,8 +44,8 @@ function Queries(){
         Players ranked 5-10 on number of touchdowns
         </button>
       <button style={{ padding: '10px', margin: '10px'}} 
-        onClick={() => runQuery('SELECT Coach.first_name, Coach.last_name, Teams.team_name, Coach.role FROM Coach LEFT JOIN Teams ON Coach.team_id = Teams.team_id UNION SELECT Coach.first_name, Coach.last_name, Teams.team_name, Coach.role FROM Coach RIGHT JOIN Teams ON Coach.team_id = Teams.team_id;')}>
-        Teams and Coaches
+        onClick={() => runQuery('SELECT t.team_name, p.first_name AS player_first, p.last_name AS player_last, COUNT(a.award_name) AS num_awards, ps.touchdowns FROM Teams t JOIN Players p ON t.team_id = p.team_id JOIN PlayerAward pa ON p.player_id = pa.player_id JOIN Award a ON pa.award_id = a.award_id JOIN PlayerStats ps ON p.player_id = ps.player_id GROUP BY t.team_name, p.first_name, p.last_name, ps.touchdowns HAVING COUNT(a.award_name) >= 1;')}>
+        Award Winners, their teams, and how many touchdowns they have
         </button>
       <button style={{ padding: '10px', margin: '10px'}} 
         onClick={() => runQuery('SELECT p.first_name, p.last_name, s.passing_yards FROM Players p JOIN PlayerStats s ON p.player_id = s.player_id WHERE p.player_id IN (SELECT aw.player_id FROM PlayerAward aw) AND s.passing_yards > (SELECT AVG(passing_yards) FROM PlayerStats);')}>
